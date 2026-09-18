@@ -13,6 +13,15 @@ let sprites = {
   esquerda: []
 };
 
+let cavaloSprites = {
+  direita: [],
+  esquerda: [],
+  cima: [],
+  baixo: []
+};
+
+let cavalo;
+
 
 class Hitbox {
 
@@ -75,6 +84,23 @@ function preload() {
     loadImage("Assets/Personagem/esquerda/passo1.png"),
     loadImage("Assets/Personagem/esquerda/passo2.png")
   ];
+
+   cavaloSprites.direita = [
+    loadImage("Assets/Cavalo_troia/direita/CT_parado.png"),
+    loadImage("Assets/Cavalo_troia/direita/CT_passo1.png")
+  ];
+
+   cavaloSprites.cima = [
+    loadImage("Assets/Cavalo_troia/cima/CT_cima_parado1.png"),
+    loadImage("Assets/Cavalo_troia/cima/CT_cima_passo1.png")
+  ];
+
+  cavaloSprites.esquerda = [
+    loadImage("Assets/Cavalo_troia/esquerda/CT_esquerda_parado.png"),
+    loadImage("Assets/Cavalo_troia/esquerda/CT_esquerda_passo1.png"),
+    loadImage("Assets/Cavalo_troia/esquerda/CT_esquerda_passo2.png")
+  ];
+
 }
 
 
@@ -112,6 +138,12 @@ function setup() {
     height / 2,
     sprites
   );
+
+  cavalo = new Inimigo(
+  0,
+  height / 2,
+  cavaloSprites
+);
 }
 
 function draw() {
@@ -127,6 +159,12 @@ function draw() {
     jogar();
 
   }
+
+  cavalo.mover(jogador);
+
+  cavalo.animar();
+
+  cavalo.mostrar();
 }
 
 
