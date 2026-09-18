@@ -16,6 +16,9 @@ class Jogador {
     this.frameAtual = 0;
     this.tempoFrame = 0;
     this.velocidadeAnimacao = 8;
+    
+    this.vidaMaxima = 100;
+    this.vida = this.vidaMaxima;
   }
 
   mover() {
@@ -82,4 +85,70 @@ class Jogador {
       this.altura
     );
   }
+
+
+  checarColisao(outro) {
+
+
+
+    return (
+      jogador.x + 10 < outro.x + outro.largura &&
+      jogador.x - 20 + jogador.largura > outro.x &&
+      jogador.y + 10 < outro.y + outro.altura &&
+      jogador.y - 10 + jogador.altura > outro.y
+    );
+
+  }
+  receberDano(dano) {
+
+  this.vida -= dano;
+
+  if (this.vida < 0) {
+    this.vida = 0;
+  }
+
+}
+mostrarVida() {
+
+  let x = 30;
+  let y = 30;
+
+  let larguraBarra = 200;
+  let alturaBarra = 20;
+
+  let larguraVida = map(
+    this.vida,
+    0,
+    this.vidaMaxima,
+    0,
+    larguraBarra
+  );
+
+  fill(50);
+  rect(
+    x,
+    y,
+    larguraBarra,
+    alturaBarra
+  );
+
+  fill(0, 255, 0);
+  rect(
+    x,
+    y,
+    larguraVida,
+    alturaBarra
+  );
+
+  fill(255);
+  textSize(16);
+  
+
+  text(
+    this.vida + " / " + this.vidaMaxima,
+    x,
+    y + 40
+  );
+}
+
 }
