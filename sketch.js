@@ -4,6 +4,7 @@ let jogador;
 let menu;
 let fonte;
 let estadoJogo = "menu";
+let spritesBotao = [];
 
 let sprites = {
   baixo: [],
@@ -42,6 +43,13 @@ function preload() {
   fonte = loadFont("Assets/font/PixelifySans-VariableFont_wght.ttf");
   backmenu = loadImage("Assets/cenário/menu.png" );
 
+  spritesBotao = [
+    loadImage("Assets/botao_frames_jogar/botao_frame_1.png"),
+    loadImage("Assets/botao_frames_jogar/botao_frame_2.png"),
+    loadImage("Assets/botao_frames_jogar/botao_frame_3.png"),
+    loadImage("Assets/botao_frames_jogar/botao_frame_4.png"),
+    loadImage("Assets/botao_frames_jogar/botao_frame_5.png")
+  ];
   
 
   sprites.baixo = [
@@ -88,9 +96,16 @@ let hitboxes = [
 
 function setup() {
 
-  createCanvas(windowWidth, windowHeight);
+  createCanvas(
+    windowWidth,
+    windowHeight
+  );
 
-  menu = new Menu();
+  menu = new Menu(
+    backmenu,
+    spritesBotao,
+    fonte
+  );
 
   jogador = new Jogador(
     width / 2,
@@ -98,7 +113,6 @@ function setup() {
     sprites
   );
 }
-
 
 function draw() {
 

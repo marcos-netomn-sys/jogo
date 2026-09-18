@@ -1,22 +1,24 @@
-
-
 class Menu {
 
-  constructor() {
+  constructor(backmenu, spritesBotao, fonte) {
+
+    this.backmenu = backmenu;
+    this.spritesBotao = spritesBotao;
+    this.fonte = fonte;
 
     this.texto = "SERVER DEFENCE";
-
     this.textoAtual = "";
 
     this.indice = 0;
-
     this.tempo = 0;
-
     this.velocidadeTexto = 5;
 
-    this.larguraBotao = 200;
+    this.frameBotao = 0;
+    this.tempoBotao = 0;
+    this.velocidadeBotao = 5;
 
-    this.alturaBotao = 60;
+    this.larguraBotao = 300;
+    this.alturaBotao = 100;
   }
 
 
@@ -38,55 +40,113 @@ class Menu {
   }
 
 
- mostrar() {
+  mouseSobreBotao() {
 
-  image(
-    backmenu,
-    0,
-    0,
-    width,
-    height
-  );
+    let x = width / 2 - this.larguraBotao / 2;
+    let y = height / 2;
 
-  this.animarTexto();
-  textFont(fonte);
-  textAlign(CENTER, CENTER);
+    return (
+      mouseX >= x &&
+      mouseX <= x + this.larguraBotao &&
+      mouseY >= y &&
+      mouseY <= y + this.alturaBotao
+    );
+  }
 
-  fill("#888b8d");
-  textSize(40);
 
-  text(
-    this.textoAtual,
-    width / 2,
-    height / 3
-  );
+  animarBotao() {
 
-  fill(0, 150, 255);
+    if (this.mouseSobreBotao()) {
 
-  rect(
-    width / 2 - this.larguraBotao / 2,
-    height / 2,
-    this.larguraBotao,
-    this.alturaBotao
-  );
+      this.tempoBotao++;
 
-  fill(255);
-  textSize(25);
+      if (this.tempoBotao >= this.velocidadeBotao) {
 
-  text(
-    "JOGAR",
-    width / 2,
-    height / 2 + this.alturaBotao / 2
-  );
-}
+        if (
+          this.frameBotao <
+          this.spritesBotao.length - 1
+        ) {
+
+          this.frameBotao++;
+        }
+
+        this.tempoBotao = 0;
+      }
+
+    } else {
+
+      this.frameBotao = 0;
+      this.tempoBotao = 0;
+    }
+  }
+
+
+  mostrarBotao() {
+
+    this.animarBotao();
+
+    let x = width / 2 - this.larguraBotao / 2;
+    let y = height / 2;
+
+    // Sprite do botão
+    image(
+      this.spritesBotao[this.frameBotao],
+      x,
+      y,
+      this.larguraBotao,
+      this.alturaBotao
+    );
+
+    // Texto JOGAR
+    textFont(this.fonte);
+    textAlign(CENTER, CENTER);
+    textSize(30);
+
+    fill(255);
+    noStroke();
+
+    text(
+      "JOGAR",
+      x + this.larguraBotao / 2,
+      y + this.alturaBotao / 2
+    );
+  }
+
+
+  mostrar() {
+
+    // Fundo
+    image(
+      this.backmenu,
+      0,
+      0,
+      width,
+      height
+    );
+
+    // Título animado
+    this.animarTexto();
+
+    textFont(this.fonte);
+    textAlign(CENTER, CENTER);
+    textSize(50);
+
+    fill("#0886da");
+    noStroke();
+
+    text(
+      this.textoAtual,
+      width / 2,
+      height / 3
+    );
+
+    // Botão + texto JOGAR
+    this.mostrarBotao();
+  }
+
 
   clicouJogar() {
 
-    return (
-      mouseX > width / 2 - this.larguraBotao / 2 &&
-      mouseX < width / 2 + this.larguraBotao / 2 &&
-      mouseY > height / 2 &&
-      mouseY < height / 2 + this.alturaBotao
-    );
+    return this.mouseSobreBotao();
   }
 }
