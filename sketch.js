@@ -20,8 +20,12 @@ let cavaloSprites = {
   baixo: []
 };
 
-let cavalo;
-
+let tempoInicioJogo;
+let tempoUltimoSpawn = 0;
+let maxCavalos = 8;
+let cavalos = []
+let servidor;
+let servidorimg;
 
 class Hitbox {
 
@@ -50,7 +54,7 @@ function preload() {
 
   cenario = loadImage("Assets/cenário/cenario.png");
   fonte = loadFont("Assets/font/PixelifySans-VariableFont_wght.ttf");
-  backmenu = loadImage("Assets/cenário/menu.png" );
+  backmenu = loadImage("Assets/cenário/menu.png");
 
   spritesBotao = [
     loadImage("Assets/botao_frames_jogar/botao_frame_1.png"),
@@ -59,7 +63,7 @@ function preload() {
     loadImage("Assets/botao_frames_jogar/botao_frame_4.png"),
     loadImage("Assets/botao_frames_jogar/botao_frame_5.png")
   ];
-  
+
 
   sprites.baixo = [
     loadImage("Assets/Personagem/baixo/parado.png"),
@@ -85,21 +89,31 @@ function preload() {
     loadImage("Assets/Personagem/esquerda/passo2.png")
   ];
 
-   cavaloSprites.direita = [
+  cavaloSprites.direita = [
     loadImage("Assets/Cavalo_troia/direita/CT_parado.png"),
     loadImage("Assets/Cavalo_troia/direita/CT_passo1.png")
   ];
 
-   cavaloSprites.cima = [
+  cavaloSprites.cima = [
     loadImage("Assets/Cavalo_troia/cima/CT_cima_parado1.png"),
     loadImage("Assets/Cavalo_troia/cima/CT_cima_passo1.png")
   ];
 
   cavaloSprites.esquerda = [
-    loadImage("Assets/Cavalo_troia/esquerda/CT_esquerda_parado.png"),
-    loadImage("Assets/Cavalo_troia/esquerda/CT_esquerda_passo1.png"),
-    loadImage("Assets/Cavalo_troia/esquerda/CT_esquerda_passo2.png")
+    loadImage("Assets/Cavalo_troia/esquerda/CT_parado.png"),
+    loadImage("Assets/Cavalo_troia/esquerda/CT_passo1.png"),
+    loadImage("Assets/Cavalo_troia/esquerda/CT_passo2.png"),
+    loadImage("Assets/Cavalo_troia/esquerda/CT_passo3.png")
   ];
+
+  cavaloSprites.baixo = [
+    loadImage("Assets/Cavalo_troia/baixo/CT_baixo_parado.png"),
+    loadImage("Assets/Cavalo_troia/baixo/CT_baixo_passo1.png"),
+    loadImage("Assets/Cavalo_troia/baixo/CT_baixo_passo2.png"),
+    loadImage("Assets/Cavalo_troia/baixo/CT_baixo_passo3.png")
+  ];
+
+  servidorImg = loadImage("Assets/Servidor/Servidor_frame1.png");
 
 }
 
@@ -139,11 +153,56 @@ function setup() {
     sprites
   );
 
-  cavalo = new Inimigo(
-  0,
-  height / 2,
-  cavaloSprites
-);
+  let locaisSpawn = [
+    { x: 0, y: 240 },
+    { x: width, y: 240 },
+    { x: 709, y: 0 },
+    { x: 709, y: height }
+  ];
+
+  let local = random(locaisSpawn);
+
+  cavalos.push(
+    new Inimigo(
+      local.x,
+      local.y,
+      cavaloSprites
+    )
+  );
+
+  servidor = new Servidor(
+    709,
+    240,
+    servidorImg
+  );
+}
+
+function criarCavalo() {
+
+  let locaisSpawn = [
+    { x: 0, y: 220},
+    { x: 0, y: 240 },
+    { x: 0, y: 260},
+    { x: width, y: 220 },
+    { x: width, y: 240 },
+    { x: width, y: 260 },
+    { x: 689, y: 0 },
+    { x: 709, y: 0 },
+    { x: 729, y: 0 },
+    { x: 689, y: height },
+    { x: 709, y: height },
+    { x: 729, y: height }
+  ];
+
+  let local = random(locaisSpawn);
+
+  cavalos.push(
+    new Inimigo(
+      local.x,
+      local.y,
+      cavaloSprites
+    )
+  );
 }
 
 function draw() {
@@ -160,11 +219,31 @@ function draw() {
 
   }
 
-  cavalo.mover(jogador);
+  if (
+    estadoJogo === "jogando" &&
+    millis() - tempoInicioJogo >= 10000
+  ) {
 
-  cavalo.animar();
+    if (
+      millis() - tempoUltimoSpawn >= 5000 &&
+      cavalos.length < maxCavalos
+    ) {
 
-  cavalo.mostrar();
+      criarCavalo();
+
+      tempoUltimoSpawn = millis();
+    }
+
+    for (let cavalo of cavalos) {
+
+      cavalo.mover(servidor);
+      cavalo.animar();
+      cavalo.mostrar();
+      cavalo.atacar(servidor);
+
+    }
+  }
+
 }
 
 
@@ -175,6 +254,7 @@ function mousePressed() {
     if (menu.clicouJogar()) {
 
       estadoJogo = "jogando";
+      tempoInicioJogo = millis();
 
     }
   }
@@ -211,6 +291,15 @@ function jogar() {
 
     };
 
+    let hitboxServidor = servidor.serverHitbox();
+
+    if (jogador.checarColisao(hitboxServidor)) {
+
+      jogador.x = xAnterior;
+      jogador.y = yAnterior;
+
+    }
+
 
     if (jogador.checarColisao(hitboxPixels)) {
 
@@ -222,10 +311,10 @@ function jogar() {
 
 
   jogador.animar();
-
   jogador.mostrar();
-
   jogador.mostrarVida();
+  servidor.mostrar();
+  servidor.mostrarVida();
 }
 
 
@@ -238,6 +327,7 @@ function keyPressed() {
       jogador.receberDano(10);
 
     }
+
   }
 }
 
