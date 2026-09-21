@@ -54,29 +54,13 @@ class Servidor {
         let larguraBarra = 120;
         let alturaBarra = 10;
 
-        let larguraVida = map(
-            this.vida,
-            0,
-            this.vidaMaxima,
-            0,
-            larguraBarra
-        );
+        let larguraVida = map(this.vida, 0, this.vidaMaxima, 0, larguraBarra);
 
         fill(50);
-        rect(
-            x,
-            y,
-            larguraBarra,
-            alturaBarra
-        );
+        rect( x, y, larguraBarra, alturaBarra );
 
         fill("#4acd1a");
-        rect(
-            x,
-            y,
-            larguraVida,
-            alturaBarra
-        );
+        rect(x, y, larguraVida, alturaBarra );
 
         fill(255);
         textSize(16);
