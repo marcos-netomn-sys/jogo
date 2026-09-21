@@ -6,7 +6,7 @@ class Inimigo {
     this.largura = 100;
     this.altura = 100;
 
-    this.velocidade = 1.5;
+    this.velocidade = 1;
 
     this.direcao = "direita";
     this.andando = true;

@@ -20,6 +20,13 @@ let cavaloSprites = {
   baixo: []
 };
 
+let servidorsprites = {
+  frame1: [],
+  frame2: [],
+  frame3: [],
+  frame4: []
+}
+
 let tempoInicioJogo;
 let tempoUltimoSpawn = 0;
 let maxCavalos = 8;
@@ -52,7 +59,7 @@ class Hitbox {
 
 function preload() {
 
-  cenario = loadImage("Assets/cenário/cenario.png");
+  cenario = loadImage("Assets/cenário/Cenario.png");
   fonte = loadFont("Assets/font/PixelifySans-VariableFont_wght.ttf");
   backmenu = loadImage("Assets/cenário/menu.png");
 
@@ -180,18 +187,18 @@ function setup() {
 function criarCavalo() {
 
   let locaisSpawn = [
-    { x: 0, y: 220},
+    { x: 0, y: 210},
     { x: 0, y: 240 },
-    { x: 0, y: 260},
-    { x: width, y: 220 },
+    { x: 0, y: 270},
+    { x: width, y: 210 },
     { x: width, y: 240 },
-    { x: width, y: 260 },
-    { x: 689, y: 0 },
+    { x: width, y: 270 },
+    { x: 679, y: 0 },
     { x: 709, y: 0 },
-    { x: 729, y: 0 },
-    { x: 689, y: height },
+    { x: 739, y: 0 },
+    { x: 679, y: height },
     { x: 709, y: height },
-    { x: 729, y: height }
+    { x: 739, y: height }
   ];
 
   let local = random(locaisSpawn);
