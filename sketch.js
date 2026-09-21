@@ -20,19 +20,13 @@ let cavaloSprites = {
   baixo: []
 };
 
-let servidorsprites = {
-  frame1: [],
-  frame2: [],
-  frame3: [],
-  frame4: []
-}
+let servidor;
+let servidorImg;
 
+let cavalos = [];
 let tempoInicioJogo;
 let tempoUltimoSpawn = 0;
 let maxCavalos = 8;
-let cavalos = []
-let servidor;
-let servidorimg;
 
 class Hitbox {
 
@@ -56,12 +50,17 @@ class Hitbox {
   }
 }
 
-
 function preload() {
 
   cenario = loadImage("Assets/cenário/Cenario.png");
-  fonte = loadFont("Assets/font/PixelifySans-VariableFont_wght.ttf");
-  backmenu = loadImage("Assets/cenário/menu.png");
+
+  fonte = loadFont(
+    "Assets/font/PixelifySans-VariableFont_wght.ttf"
+  );
+
+  backmenu = loadImage(
+    "Assets/cenário/menu.png"
+  );
 
   spritesBotao = [
     loadImage("Assets/botao_frames_jogar/botao_frame_1.png"),
@@ -70,7 +69,6 @@ function preload() {
     loadImage("Assets/botao_frames_jogar/botao_frame_4.png"),
     loadImage("Assets/botao_frames_jogar/botao_frame_5.png")
   ];
-
 
   sprites.baixo = [
     loadImage("Assets/Personagem/baixo/parado.png"),
@@ -120,10 +118,10 @@ function preload() {
     loadImage("Assets/Cavalo_troia/baixo/CT_baixo_passo3.png")
   ];
 
-  servidorImg = loadImage("Assets/Servidor/Servidor_frame1.png");
-
+  servidorImg = loadImage(
+    "Assets/Servidor/Servidor_frame1.png"
+  );
 }
-
 
 let hitboxes = [
 
@@ -138,8 +136,8 @@ let hitboxes = [
 
   new Hitbox(0.06, 0.68, 0.075, 0.1),
   new Hitbox(0.86, 0.68, 0.075, 0.1)
-];
 
+];
 
 function setup() {
 
@@ -156,59 +154,116 @@ function setup() {
 
   jogador = new Jogador(
     width / 2,
-    height / 2,
+    height * 0.65,
     sprites
   );
 
-  let locaisSpawn = [
-    { x: 0, y: 240 },
-    { x: width, y: 240 },
-    { x: 709, y: 0 },
-    { x: 709, y: height }
-  ];
+  posicionarServidor();
 
-  let local = random(locaisSpawn);
+  criarCavalo();
+}
 
-  cavalos.push(
-    new Inimigo(
-      local.x,
-      local.y,
-      cavaloSprites
-    )
-  );
+function posicionarServidor() {
 
-  servidor = new Servidor(
-    709,
-    240,
-    servidorImg
-  );
+  let xServidor =
+    width * 0.50 - 60;
+
+  let yServidor =
+    height * 0.43 - 55;
+
+  if (!servidor) {
+
+    servidor = new Servidor(
+      xServidor,
+      yServidor,
+      servidorImg
+    );
+
+  } else {
+
+    servidor.x = xServidor;
+    servidor.y = yServidor;
+
+  }
 }
 
 function criarCavalo() {
 
   let locaisSpawn = [
-    { x: 0, y: 210},
-    { x: 0, y: 240 },
-    { x: 0, y: 270},
-    { x: width, y: 210 },
-    { x: width, y: 240 },
-    { x: width, y: 270 },
-    { x: 679, y: 0 },
-    { x: 709, y: 0 },
-    { x: 739, y: 0 },
-    { x: 679, y: height },
-    { x: 709, y: height },
-    { x: 739, y: height }
+
+    {
+      x: 0,
+      y: height * 0.27
+    },
+
+    {
+      x: 0,
+      y: height * 0.30
+    },
+
+    {
+      x: 0,
+      y: height * 0.33
+    },
+
+    {
+      x: width,
+      y: height * 0.27
+    },
+
+    {
+      x: width,
+      y: height * 0.30
+    },
+
+    {
+      x: width,
+      y: height * 0.33
+    },
+
+    {
+      x: width * 0.47,
+      y: 0
+    },
+
+    {
+      x: width * 0.50,
+      y: 0
+    },
+
+    {
+      x: width * 0.53,
+      y: 0
+    },
+
+    {
+      x: width * 0.47,
+      y: height
+    },
+
+    {
+      x: width * 0.50,
+      y: height
+    },
+
+    {
+      x: width * 0.53,
+      y: height
+    }
+
   ];
 
-  let local = random(locaisSpawn);
+  let local =
+    random(locaisSpawn);
 
   cavalos.push(
+
     new Inimigo(
       local.x,
       local.y,
       cavaloSprites
     )
+
   );
 }
 
@@ -218,41 +273,44 @@ function draw() {
 
     menu.mostrar();
 
-  }
-
-  else if (estadoJogo === "jogando") {
+  } else if (estadoJogo === "jogando") {
 
     jogar();
 
-  }
-
-  if (
-    estadoJogo === "jogando" &&
-    millis() - tempoInicioJogo >= 10000
-  ) {
-
     if (
-      millis() - tempoUltimoSpawn >= 5000 &&
-      cavalos.length < maxCavalos
+      millis() - tempoInicioJogo >= 10000
     ) {
 
-      criarCavalo();
+      if (
+        millis() - tempoUltimoSpawn >= 5000 &&
+        cavalos.length < maxCavalos
+      ) {
 
-      tempoUltimoSpawn = millis();
-    }
+        criarCavalo();
 
-    for (let cavalo of cavalos) {
+        tempoUltimoSpawn =
+          millis();
 
-      cavalo.mover(servidor);
-      cavalo.animar();
-      cavalo.mostrar();
-      cavalo.atacar(servidor);
+      }
 
+      for (let cavalo of cavalos) {
+
+        cavalo.mover(
+          servidor
+        );
+
+        cavalo.animar();
+
+        cavalo.mostrar();
+
+        cavalo.atacar(
+          servidor
+        );
+
+      }
     }
   }
-
 }
-
 
 function mousePressed() {
 
@@ -260,13 +318,18 @@ function mousePressed() {
 
     if (menu.clicouJogar()) {
 
-      estadoJogo = "jogando";
-      tempoInicioJogo = millis();
+      estadoJogo =
+        "jogando";
+
+      tempoInicioJogo =
+        millis();
+
+      tempoUltimoSpawn =
+        millis();
 
     }
   }
 }
-
 
 function jogar() {
 
@@ -278,81 +341,69 @@ function jogar() {
     height
   );
 
+  let xAnterior =
+    jogador.x;
 
-  let xAnterior = jogador.x;
-  let yAnterior = jogador.y;
-
+  let yAnterior =
+    jogador.y;
 
   jogador.mover();
 
+  let hitboxServidor =
+    servidor.serverHitbox();
+
+  if (jogador.checarColisao(hitboxServidor)) {
+
+    jogador.x = xAnterior;
+    jogador.y = yAnterior;
+
+  }
 
   for (let hitbox of hitboxes) {
 
     let hitboxPixels = {
 
-      x: hitbox.x * width,
-      y: hitbox.y * height,
-
-      largura: hitbox.largura * width,
-      altura: hitbox.altura * height
+      x:hitbox.x * width,
+      y:hitbox.y * height,
+largura:hitbox.largura * width,
+altura:hitbox.altura * height
 
     };
 
-    let hitboxServidor = servidor.serverHitbox();
-
-    if (jogador.checarColisao(hitboxServidor)) {
-
-      jogador.x = xAnterior;
-      jogador.y = yAnterior;
-
-    }
-
-
     if (jogador.checarColisao(hitboxPixels)) {
-
-      jogador.x = xAnterior;
-      jogador.y = yAnterior;
-
+jogador.x = xAnterior;
+jogador.y =yAnterior;
     }
   }
 
-
+  servidor.mostrar();
+  servidor.mostrarVida();
   jogador.animar();
   jogador.mostrar();
   jogador.mostrarVida();
-  servidor.mostrar();
-  servidor.mostrarVida();
 }
-
 
 function keyPressed() {
 
   if (estadoJogo === "jogando") {
 
     if (key === "e" || key === "E") {
-
-      jogador.receberDano(10);
-
-    }
-
+jogador.receberDano(10);
+  }
   }
 }
-
 
 function mostrarHitboxes() {
 
-  for (let i = 0; i < hitboxes.length; i++) {
-
-    hitboxes[i].mostrar();
-
+  for (let i = 0;i < hitboxes.length;i++) {
+  hitboxes[i].mostrar();
   }
 }
 
-
 function windowResized() {
-
   resizeCanvas(
     windowWidth,
     windowHeight
   );
+  posicionarServidor();
 }

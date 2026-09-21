@@ -8,7 +8,7 @@ class Servidor {
 
         // TAMANHO
         this.largura = 120;
-        this.altura = 120;
+        this.altura = 100;
 
         // IMAGEM DO SERVIDOR
         this.imagem = imagem;
@@ -48,8 +48,8 @@ class Servidor {
 
     mostrarVida() {
 
-        let x = 709;
-        let y = 230;
+        let x = this.x;
+        let y = this.y - 20;
 
         let larguraBarra = 120;
         let alturaBarra = 10;
