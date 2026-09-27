@@ -5,7 +5,8 @@ let menu;
 let fonte;
 let estadoJogo = "menu";
 let spritesBotao = [];
-
+let logoFrames = [];
+let musicaMenu;
 let sprites = {
   baixo: [],
   cima: [],
@@ -43,12 +44,28 @@ function preload() {
   fonte = loadFont("Assets/font/PixelifySans-VariableFont_wght.ttf");
   backmenu = loadImage("Assets/cenário/menu.png" );
 
+  musicaMenu = loadSound(
+  "Assets/audio/musica_menu.mp3"
+);
+
+  logoFrames = [
+  loadImage("Assets/logo/frame_1.png"),
+  loadImage("Assets/logo/frame_2.png"),
+  loadImage("Assets/logo/frame_3.png"),
+  loadImage("Assets/logo/frame_4.png"),
+  loadImage("Assets/logo/frame_5.png"),
+  loadImage("Assets/logo/frame_6.png"),
+  loadImage("Assets/logo/frame_7.png"),
+  loadImage("Assets/logo/frame_8.png"),
+  loadImage("Assets/logo/frame_9.png"),
+  loadImage("Assets/logo/frame_10.png")
+];
   spritesBotao = [
-    loadImage("Assets/botao_frames_jogar/botao_frame_1.png"),
-    loadImage("Assets/botao_frames_jogar/botao_frame_2.png"),
-    loadImage("Assets/botao_frames_jogar/botao_frame_3.png"),
-    loadImage("Assets/botao_frames_jogar/botao_frame_4.png"),
-    loadImage("Assets/botao_frames_jogar/botao_frame_5.png")
+    loadImage("Assets/botao_frames_jogar/botao_frame_1_jogar.png"),
+    loadImage("Assets/botao_frames_jogar/botao_frame_2_jogar.png"),
+    loadImage("Assets/botao_frames_jogar/botao_frame_3_jogar.png"),
+    loadImage("Assets/botao_frames_jogar/botao_frame_4_jogar.png"),
+    loadImage("Assets/botao_frames_jogar/botao_frame_5_jogar.png")
   ];
   
 
@@ -101,11 +118,12 @@ function setup() {
     windowHeight
   );
 
-  menu = new Menu(
-    backmenu,
-    spritesBotao,
-    fonte
-  );
+ menu = new Menu(
+  backmenu,
+  spritesBotao,
+  logoFrames,
+  fonte
+);
 
   jogador = new Jogador(
     width / 2,
@@ -197,7 +215,7 @@ function keyPressed() {
 
     if (key === "e" || key === "E") {
 
-      jogador.receberDano(10);
+      jogador.receberDano(5);
 
     }
   }

@@ -110,7 +110,7 @@ class Jogador {
 }
 mostrarVida() {
 
-  let x = 30;
+  let x = 50;
   let y = 30;
 
   let larguraBarra = 200;

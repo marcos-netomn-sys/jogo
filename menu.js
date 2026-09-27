@@ -1,42 +1,71 @@
 class Menu {
 
-  constructor(backmenu, spritesBotao, fonte) {
+  constructor(backmenu, spritesBotao, logoFrames, fonte) {
 
     this.backmenu = backmenu;
     this.spritesBotao = spritesBotao;
+    this.logoFrames = logoFrames;
     this.fonte = fonte;
 
-    this.texto = "SERVER DEFENCE";
-    this.textoAtual = "";
-
-    this.indice = 0;
-    this.tempo = 0;
-    this.velocidadeTexto = 5;
+    this.frameLogo = 0;
+    this.tempoLogo = 0;
+    this.velocidadeLogo = 10;
 
     this.frameBotao = 0;
     this.tempoBotao = 0;
     this.velocidadeBotao = 5;
+
+    this.larguraLogo = 500;
+    this.alturaLogo = 250;
 
     this.larguraBotao = 300;
     this.alturaBotao = 100;
   }
 
 
-  animarTexto() {
+  animarLogo() {
 
-    this.tempo++;
-
-    if (
-      this.tempo >= this.velocidadeTexto &&
-      this.indice < this.texto.length
-    ) {
-
-      this.textoAtual += this.texto[this.indice];
-
-      this.indice++;
-
-      this.tempo = 0;
+    if (this.logoFrames.length === 0) {
+      return;
     }
+
+    this.tempoLogo++;
+
+    if (this.tempoLogo >= this.velocidadeLogo) {
+
+      this.frameLogo++;
+
+      if (this.frameLogo >= this.logoFrames.length) {
+        this.frameLogo = 0;
+      }
+
+      this.tempoLogo = 0;
+    }
+  }
+
+
+  mostrarLogo() {
+
+    if (this.logoFrames.length === 0) {
+      return;
+    }
+
+    this.animarLogo();
+
+    let x = width / 2;
+    let y = height * 0.30;
+
+    imageMode(CENTER);
+
+    image(
+      this.logoFrames[this.frameLogo],
+      x,
+      y,
+      this.larguraLogo,
+      this.alturaLogo
+    );
+
+    imageMode(CORNER);
   }
 
 
@@ -66,7 +95,6 @@ class Menu {
           this.frameBotao <
           this.spritesBotao.length - 1
         ) {
-
           this.frameBotao++;
         }
 
@@ -83,12 +111,17 @@ class Menu {
 
   mostrarBotao() {
 
+    if (this.spritesBotao.length === 0) {
+      return;
+    }
+
     this.animarBotao();
 
     let x = width / 2 - this.larguraBotao / 2;
     let y = height / 2;
 
-    // Sprite do botão
+    imageMode(CORNER);
+
     image(
       this.spritesBotao[this.frameBotao],
       x,
@@ -96,26 +129,13 @@ class Menu {
       this.larguraBotao,
       this.alturaBotao
     );
-
-    // Texto JOGAR
-    textFont(this.fonte);
-    textAlign(CENTER, CENTER);
-    textSize(30);
-
-    fill(255);
-    noStroke();
-
-    text(
-      "JOGAR",
-      x + this.larguraBotao / 2,
-      y + this.alturaBotao / 2
-    );
   }
 
 
   mostrar() {
 
-    // Fundo
+    imageMode(CORNER);
+
     image(
       this.backmenu,
       0,
@@ -124,23 +144,8 @@ class Menu {
       height
     );
 
-    // Título animado
-    this.animarTexto();
+    this.mostrarLogo();
 
-    textFont(this.fonte);
-    textAlign(CENTER, CENTER);
-    textSize(50);
-
-    fill("#0886da");
-    noStroke();
-
-    text(
-      this.textoAtual,
-      width / 2,
-      height / 3
-    );
-
-    // Botão + texto JOGAR
     this.mostrarBotao();
   }
 
