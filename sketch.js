@@ -13,6 +13,7 @@ let sprites = {
   direita: [],
   esquerda: []
 };
+let tiros = [];
 
 let cavaloSprites = {
   direita: [],
@@ -64,7 +65,7 @@ function preload() {
   );
 
   musicaMenu = loadSound(
-  "Assets/audio/musica_menu.mp3"
+  "Assets/audio/music_menu.mp3"
 );
 
   logoFrames = [
@@ -205,6 +206,16 @@ function posicionarServidor() {
   }
 }
 
+function atirar() {
+  let tiro = new Tiro(
+    jogador.x + jogador.largura / 2,
+    jogador.y + jogador.altura / 2,
+    jogador.direcao
+  );
+
+  tiros.push(tiro);
+}
+
 function criarCavalo() {
 
   let locaisSpawn = [
@@ -334,17 +345,25 @@ function mousePressed() {
 
   if (estadoJogo === "menu") {
 
-    if (menu.clicouJogar()) {
+    userStartAudio();
 
-      estadoJogo =
-        "jogando";
+    if (!menu.clicouJogar()) {
 
-      tempoInicioJogo =
-        millis();
+      if (!musicaMenu.isPlaying()) {
+        musicaMenu.setVolume(31);
+        musicaMenu.loop();
+      }
 
-      tempoUltimoSpawn =
-        millis();
+    } else {
 
+      if (musicaMenu.isPlaying()) {
+        musicaMenu.stop();
+      }
+
+      estadoJogo = "jogando";
+
+      tempoInicioJogo = millis();
+      tempoUltimoSpawn = millis();
     }
   }
 }
@@ -399,20 +418,31 @@ jogador.y =yAnterior;
   jogador.animar();
   jogador.mostrar();
   jogador.mostrarVida();
+
+  atualizarTiros();
 }
 
 function keyPressed() {
-
   if (estadoJogo === "jogando") {
-
     if (key === "e" || key === "E") {
-
       jogador.receberDano(5);
+    }
 
+    if (key === " ") {
+      atirar();
     }
   }
 }
+function atualizarTiros() {
+  for (let i = tiros.length - 1; i >= 0; i--) {
+    tiros[i].mover();
+    tiros[i].mostrar();
 
+    if (tiros[i].saiuDaTela()) {
+      tiros.splice(i, 1);
+    }
+  }
+}
 function mostrarHitboxes() {
 
   for (let i = 0;i < hitboxes.length;i++) {
