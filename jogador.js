@@ -6,7 +6,7 @@ class Jogador {
     this.largura = 80;
     this.altura = 80;
 
-    this.velocidade = 4;
+    this.velocidade = 5;
 
     this.sprites = sprites;
 
@@ -16,7 +16,7 @@ class Jogador {
     this.frameAtual = 0;
     this.tempoFrame = 0;
     this.velocidadeAnimacao = 8;
-    
+
     this.vidaMaxima = 100;
     this.vida = this.vidaMaxima;
   }
@@ -101,54 +101,54 @@ class Jogador {
   }
   receberDano(dano) {
 
-  this.vida -= dano;
+    this.vida -= dano;
 
-  if (this.vida < 0) {
-    this.vida = 0;
+    if (this.vida < 0) {
+      this.vida = 0;
+    }
+
   }
-
-}
-mostrarVida() {
+  mostrarVida() {
 
   let x = 50;
   let y = 30;
 
-  let larguraBarra = 200;
-  let alturaBarra = 20;
+    let larguraBarra = 200;
+    let alturaBarra = 20;
 
-  let larguraVida = map(
-    this.vida,
-    0,
-    this.vidaMaxima,
-    0,
-    larguraBarra
-  );
+    let larguraVida = map(
+      this.vida,
+      0,
+      this.vidaMaxima,
+      0,
+      larguraBarra
+    );
 
-  fill(50);
-  rect(
-    x,
-    y,
-    larguraBarra,
-    alturaBarra
-  );
+    fill(50);
+    rect(
+      x,
+      y,
+      larguraBarra,
+      alturaBarra
+    );
 
-  fill(0, 255, 0);
-  rect(
-    x,
-    y,
-    larguraVida,
-    alturaBarra
-  );
+    fill(0, 255, 0);
+    rect(
+      x,
+      y,
+      larguraVida,
+      alturaBarra
+    );
 
-  fill(255);
-  textSize(16);
-  
+    fill(255);
+    textSize(16);
 
-  text(
-    this.vida + " / " + this.vidaMaxima,
-    x,
-    y + 40
-  );
-}
+
+    text(
+      this.vida + " / " + this.vidaMaxima,
+      x,
+      y + 40
+    );
+  }
 
 }
