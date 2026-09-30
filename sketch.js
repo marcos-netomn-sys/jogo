@@ -29,6 +29,7 @@ let cavalos = [];
 let tempoInicioJogo;
 let tempoUltimoSpawn = 0;
 let maxCavalos = 8;
+let plantinha;
 
 class Hitbox {
 
@@ -139,6 +140,7 @@ function preload() {
   servidorImg = loadImage(
     "Assets/Servidor/Servidor_frame1.png"
   );
+  plantinha = loadImage("Assets/plantinha.png.png");
 }
 
 let hitboxes = [
@@ -329,8 +331,8 @@ function draw() {
         );
 
         cavalo.animar();
-
         cavalo.mostrar();
+        cavalo.mostrarVida();
 
         cavalo.atacar(
           servidor
@@ -420,6 +422,14 @@ jogador.y =yAnterior;
   jogador.mostrarVida();
 
   atualizarTiros();
+    // Plantinha decorativa
+  image(
+    plantinha,
+    width * 0.09,
+    height * 0.19,
+    60,
+    60
+  );
 }
 
 function keyPressed() {
@@ -435,14 +445,51 @@ function keyPressed() {
 }
 function atualizarTiros() {
   for (let i = tiros.length - 1; i >= 0; i--) {
-    tiros[i].mover();
-    tiros[i].mostrar();
+    let tiro = tiros[i];
 
-    if (tiros[i].saiuDaTela()) {
+    tiro.mover();
+
+    let acertou = false;
+
+    for (let j = cavalos.length - 1; j >= 0; j--) {
+      let inimigo = cavalos[j];
+      let hitbox = inimigo.inimigoHitbox();
+
+      if (tiro.checarColisao(hitbox)) {
+        inimigo.receberDano(tiro.dano);
+        acertou = true;
+
+        if (inimigo.estaMorto()) {
+          cavalos.splice(j, 1);
+        }
+
+        break;
+      }
+    }
+
+    if (acertou || tiro.saiuDaTela()) {
       tiros.splice(i, 1);
+    } else {
+      tiro.mostrar();
     }
   }
+
+    // Luz lilás perto do servidor
+  push();
+  noStroke();
+
+  fill(180, 100, 255, 15);
+  ellipse(width * 0.50, height * 0.43, 260, 200);
+
+  fill(180, 100, 255, 25);
+  ellipse(width * 0.50, height * 0.43, 180, 140);
+
+  fill(180, 100, 255, 35);
+  ellipse(width * 0.50, height * 0.43, 100, 80);
+
+  pop();
 }
+
 function mostrarHitboxes() {
 
   for (let i = 0;i < hitboxes.length;i++) {

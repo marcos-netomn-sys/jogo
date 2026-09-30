@@ -153,6 +153,45 @@ class Inimigo {
     image(sprite, this.x, this.y, this.largura, this.altura);
   }
 
+     inimigoHitbox() {
+    return {
+      x: this.x,
+      y: this.y,
+      largura: this.largura,
+      altura: this.altura
+    };
+  }
+    mostrarVida() {
+    let larguraBarra = this.largura;
+    let alturaBarra = 8;
+
+    let vidaAtual =
+      (this.vida / this.vidaMaxima) * larguraBarra;
+
+    push();
+    noStroke();
+
+    // Fundo da barra
+    fill(255, 0, 0);
+    rect(
+      this.x,
+      this.y - 15,
+      larguraBarra,
+      alturaBarra
+    );
+
+    // Vida restante
+    fill(0, 200, 0);
+    rect(
+      this.x,
+      this.y - 15,
+      vidaAtual,
+      alturaBarra
+    );
+
+    pop();
+  }
+  
   receberDano(dano) {
     this.vida -= dano;
 

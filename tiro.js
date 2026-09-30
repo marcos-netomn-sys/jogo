@@ -6,6 +6,7 @@ class Tiro {
     this.velocidade = 10;
     this.largura = 20;
     this.altura = 20;
+    this.dano = 10;
   }
 
   mover() {
@@ -29,4 +30,16 @@ class Tiro {
       this.y > height
     );
   }
+
+checarColisao(hitbox) {
+    return (
+      this.x - this.largura / 2 < hitbox.x + hitbox.largura &&
+      this.x + this.largura / 2 > hitbox.x &&
+      this.y - this.altura / 2 < hitbox.y + hitbox.altura &&
+      this.y + this.altura / 2 > hitbox.y
+    );
+  }
+
+
 }
+
