@@ -29,6 +29,7 @@ let cavalos = [];
 let tempoInicioJogo;
 let tempoUltimoSpawn = 0;
 let maxCavalos = 8;
+let total_cavalos_criados = 0;
 let plantinha;
 
 class Hitbox {
@@ -66,21 +67,21 @@ function preload() {
   );
 
   musicaMenu = loadSound(
-  "Assets/audio/music_menu.mp3"
-);
+    "Assets/audio/music_menu.mp3"
+  );
 
   logoFrames = [
-  loadImage("Assets/logo/frame_1.png"),
-  loadImage("Assets/logo/frame_2.png"),
-  loadImage("Assets/logo/frame_3.png"),
-  loadImage("Assets/logo/frame_4.png"),
-  loadImage("Assets/logo/frame_5.png"),
-  loadImage("Assets/logo/frame_6.png"),
-  loadImage("Assets/logo/frame_7.png"),
-  loadImage("Assets/logo/frame_8.png"),
-  loadImage("Assets/logo/frame_9.png"),
-  loadImage("Assets/logo/frame_10.png")
-];
+    loadImage("Assets/logo/frame_1.png"),
+    loadImage("Assets/logo/frame_2.png"),
+    loadImage("Assets/logo/frame_3.png"),
+    loadImage("Assets/logo/frame_4.png"),
+    loadImage("Assets/logo/frame_5.png"),
+    loadImage("Assets/logo/frame_6.png"),
+    loadImage("Assets/logo/frame_7.png"),
+    loadImage("Assets/logo/frame_8.png"),
+    loadImage("Assets/logo/frame_9.png"),
+    loadImage("Assets/logo/frame_10.png")
+  ];
   spritesBotao = [
     loadImage("Assets/botao_frames_jogar/botao_frame_1_jogar.png"),
     loadImage("Assets/botao_frames_jogar/botao_frame_2_jogar.png"),
@@ -166,12 +167,12 @@ function setup() {
     windowHeight
   );
 
- menu = new Menu(
-  backmenu,
-  spritesBotao,
-  logoFrames,
-  fonte
-);
+  menu = new Menu(
+    backmenu,
+    spritesBotao,
+    logoFrames,
+    fonte
+  );
 
   jogador = new Jogador(
     width / 2,
@@ -308,20 +309,22 @@ function draw() {
 
     jogar();
 
+    if (servidor.foiDestruido()) {
+      estadoJogo = "gameover"
+    }
+
     if (
       millis() - tempoInicioJogo >= 10000
     ) {
 
       if (
         millis() - tempoUltimoSpawn >= 5000 &&
-        cavalos.length < maxCavalos
+        total_cavalos_criados < maxCavalos
       ) {
 
         criarCavalo();
-
-        tempoUltimoSpawn =
-          millis();
-
+        total_cavalos_criados++;
+        tempoUltimoSpawn = millis();
       }
 
       for (let cavalo of cavalos) {
@@ -340,6 +343,15 @@ function draw() {
 
       }
     }
+
+  }
+  else if (estadoJogo === "gameover") {
+    background(0);
+    fill(255);
+    textAlign(CENTER, CENTER);
+    textSize(80);
+    textFont(fonte);
+    text("GAME OVER", width / 2, height / 2);
   }
 }
 
@@ -402,16 +414,16 @@ function jogar() {
 
     let hitboxPixels = {
 
-      x:hitbox.x * width,
-      y:hitbox.y * height,
-largura:hitbox.largura * width,
-altura:hitbox.altura * height
+      x: hitbox.x * width,
+      y: hitbox.y * height,
+      largura: hitbox.largura * width,
+      altura: hitbox.altura * height
 
     };
 
     if (jogador.checarColisao(hitboxPixels)) {
-jogador.x = xAnterior;
-jogador.y =yAnterior;
+      jogador.x = xAnterior;
+      jogador.y = yAnterior;
     }
   }
 
@@ -422,7 +434,7 @@ jogador.y =yAnterior;
   jogador.mostrarVida();
 
   atualizarTiros();
-    // Plantinha decorativa
+  // Plantinha decorativa
   image(
     plantinha,
     width * 0.09,
@@ -474,7 +486,7 @@ function atualizarTiros() {
     }
   }
 
-    // Luz lilás perto do servidor
+  // Luz lilás perto do servidor
   push();
   noStroke();
 
@@ -492,8 +504,8 @@ function atualizarTiros() {
 
 function mostrarHitboxes() {
 
-  for (let i = 0;i < hitboxes.length;i++) {
-  hitboxes[i].mostrar();
+  for (let i = 0; i < hitboxes.length; i++) {
+    hitboxes[i].mostrar();
   }
 }
 

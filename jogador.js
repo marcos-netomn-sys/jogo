@@ -6,7 +6,7 @@ class Jogador {
     this.largura = 80;
     this.altura = 80;
 
-    this.velocidade = 5;
+    this.velocidade = 7;
 
     this.sprites = sprites;
 
@@ -110,8 +110,8 @@ class Jogador {
   }
   mostrarVida() {
 
-  let x = 50;
-  let y = 30;
+    let x = 50;
+    let y = 30;
 
     let larguraBarra = 200;
     let alturaBarra = 20;

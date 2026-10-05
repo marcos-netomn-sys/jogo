@@ -31,7 +31,7 @@ class Tiro {
     );
   }
 
-checarColisao(hitbox) {
+  checarColisao(hitbox) {
     return (
       this.x - this.largura / 2 < hitbox.x + hitbox.largura &&
       this.x + this.largura / 2 > hitbox.x &&

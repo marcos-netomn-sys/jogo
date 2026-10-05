@@ -6,7 +6,7 @@ class Inimigo {
     this.largura = 100;
     this.altura = 100;
 
-    this.velocidade = 1;
+    this.velocidade = 2;
 
     this.direcao = "direita";
     this.andando = true;
@@ -28,16 +28,16 @@ class Inimigo {
 
     if (this.atacando) {
 
-        this.tempoAtaque++;
+      this.tempoAtaque++;
 
-        if (this.tempoAtaque >= 60) {
+      if (this.tempoAtaque >= 60) {
 
-            alvo.receberDano(this.dano);
+        alvo.receberDano(this.dano);
 
-            this.tempoAtaque = 0;
-        }
+        this.tempoAtaque = 0;
+      }
     }
-}
+  }
 
   mover(alvo) {
 
@@ -153,7 +153,7 @@ class Inimigo {
     image(sprite, this.x, this.y, this.largura, this.altura);
   }
 
-     inimigoHitbox() {
+  inimigoHitbox() {
     return {
       x: this.x,
       y: this.y,
@@ -161,7 +161,7 @@ class Inimigo {
       altura: this.altura
     };
   }
-    mostrarVida() {
+  mostrarVida() {
     let larguraBarra = this.largura;
     let alturaBarra = 8;
 
@@ -191,7 +191,7 @@ class Inimigo {
 
     pop();
   }
-  
+
   receberDano(dano) {
     this.vida -= dano;
 
