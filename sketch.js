@@ -435,10 +435,18 @@ function jogar() {
 
   atualizarTiros();
   // Plantinha decorativa
+image(
+    plantinha,
+    width * 0.065,
+    height * 0.20,
+    60,
+    60
+  );
+
   image(
     plantinha,
-    width * 0.09,
-    height * 0.19,
+    width * 0.05,
+    height * 0.67,
     60,
     60
   );
