@@ -1,6 +1,6 @@
 
 class Inimigo {
-  constructor(x, y, sprites, animacoes = null) {
+  constructor(x, y, sprites = null, animacoes = null) {
     this.x = x;
     this.y = y;
 

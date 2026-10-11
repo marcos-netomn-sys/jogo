@@ -47,7 +47,6 @@ let tempoTransicaoRound = 0;
 let plantinha;
 
 // MAPEAMENTO DOS FRAMES DO BUG
-// As coordenadas são estimativas e podem precisar de ajustes.
 let mapeamentoBug = {
   direita: {
     frames: [
@@ -372,7 +371,6 @@ function criarBug() {
     new Inimigo(
       local.x,
       local.y,
-      null,
       animacoesBug
     )
     
