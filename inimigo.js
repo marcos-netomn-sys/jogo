@@ -1,17 +1,22 @@
+
 class Inimigo {
-  constructor(x, y, sprites) {
+  constructor(x, y, sprites, animacoes = null) {
     this.x = x;
     this.y = y;
 
     this.largura = 100;
     this.altura = 100;
 
-    this.velocidade = 2;
+    this.velocidade = 1.35;
 
     this.direcao = "direita";
     this.andando = true;
 
+    // Sprites antigos, usados pelos cavalos
     this.sprites = sprites;
+
+    // Animações novas, usadas pelo Bug
+    this.animacoes = animacoes;
 
     this.frameAtual = 0;
     this.tempoFrame = 0;
@@ -20,47 +25,59 @@ class Inimigo {
     this.vidaMaxima = 100;
     this.vida = this.vidaMaxima;
 
-    this.dano = Math.floor(Math.random() * 31);
-    this.atacando = false
+    this.dano = Math.floor(Math.random() * 21);
+    this.atacando = false;
     this.tempoAtaque = 0;
   }
+
   atacar(alvo) {
-
     if (this.atacando) {
-
       this.tempoAtaque++;
 
       if (this.tempoAtaque >= 60) {
-
         alvo.receberDano(this.dano);
-
         this.tempoAtaque = 0;
       }
+    } else {
+      this.tempoAtaque = 0;
     }
   }
 
   mover(alvo) {
+    let dx =
+      (alvo.x + (alvo.largura || 0) / 2) -
+      (this.x + this.largura / 2);
 
-    let dx = alvo.x - this.x;
-    let dy = alvo.y - this.y;
+    let dy =
+      (alvo.y + (alvo.altura || 0) / 2) -
+      (this.y + this.altura / 2);
 
     let distancia = sqrt(dx * dx + dy * dy);
 
-    if (distancia > 0) {
+    // Perto do alvo: para e ataca
+    if (distancia <= 70) {
+      this.andando = false;
+      this.atacando = true;
+      return;
+    }
 
-      dx /= distancia;
-      dy /= distancia;
+    if (distancia <= 0) {
+      this.andando = false;
+      this.atacando = false;
+      return;
+    }
 
-      // Guarda a posição antes de andar
-      let xAnterior = this.x;
-      let yAnterior = this.y;
+    dx /= distancia;
+    dy /= distancia;
 
-      // Anda em direção ao alvo
-      this.x += dx * this.velocidade;
-      this.y += dy * this.velocidade;
+    let xAnterior = this.x;
+    let yAnterior = this.y;
 
+    this.x += dx * this.velocidade;
+    this.y += dy * this.velocidade;
 
-      // HITBOX DO SERVIDOR
+    // Colisão especial com o servidor
+    if (typeof alvo.serverHitbox === "function") {
       let hitboxAlvo = alvo.serverHitbox();
 
       let colidiu =
@@ -69,66 +86,56 @@ class Inimigo {
         this.y < hitboxAlvo.y + hitboxAlvo.altura &&
         this.y + this.altura > hitboxAlvo.y;
 
-
-      // Se entrou no servidor, volta para a posição anterior
       if (colidiu) {
-
         this.x = xAnterior;
         this.y = yAnterior;
-
         this.andando = false;
         this.atacando = true;
-
         return;
       }
+    }
 
-      this.andando = true;
-      this.atacando = false;
+    this.andando = true;
+    this.atacando = false;
 
-      // DESCOBRE A DIREÇÃO
-      if (abs(dx) > abs(dy)) {
-
-        if (dx > 0) {
-          this.direcao = "direita";
-        } else {
-          this.direcao = "esquerda";
-        }
-
-      } else {
-
-        if (dy > 0) {
-          this.direcao = "baixo";
-        } else {
-          this.direcao = "cima";
-        }
-
-      }
+    // Define a direção do movimento
+    if (abs(dx) > abs(dy)) {
+      this.direcao = dx > 0 ? "direita" : "esquerda";
+    } else {
+      this.direcao = dy > 0 ? "baixo" : "cima";
     }
   }
 
   animar() {
+    // Bug: usa a classe Animacao do professor
+    if (this.animacoes) {
+      let animacaoAtual = this.animacoes[this.direcao];
 
+      if (this.andando && animacaoAtual) {
+        animacaoAtual.avancarFrame();
+      }
+
+      return;
+    }
+
+    // Cavalos: mantém o sistema de animação antigo
     if (
+      !this.sprites ||
       !this.sprites[this.direcao] ||
       this.sprites[this.direcao].length === 0
     ) {
       return;
     }
 
-    // Se o cavalo estiver parado
     if (!this.andando) {
-
       this.frameAtual = 0;
       this.tempoFrame = 0;
-
       return;
     }
 
-    // Se estiver andando
     this.tempoFrame++;
 
     if (this.tempoFrame >= this.velocidadeAnimacao) {
-
       this.frameAtual++;
 
       if (this.frameAtual >= this.sprites[this.direcao].length) {
@@ -140,17 +147,32 @@ class Inimigo {
   }
 
   mostrar() {
-    if (!this.sprites[this.direcao]) {
+    // Desenha o Bug com a classe Animacao
+    if (this.animacoes) {
+      let animacaoAtual = this.animacoes[this.direcao];
+
+      if (animacaoAtual) {
+        animacaoAtual.desenhar(
+          this.x,
+          this.y,
+          this.largura,
+          this.altura
+        );
+      }
+
+      return;
+    }
+
+    // Desenha os cavalos usando o sistema antigo
+    if (!this.sprites || !this.sprites[this.direcao]) {
       return;
     }
 
     let sprite = this.sprites[this.direcao][this.frameAtual];
 
-    if (!sprite) {
-      return;
+    if (sprite) {
+      image(sprite, this.x, this.y, this.largura, this.altura);
     }
-
-    image(sprite, this.x, this.y, this.largura, this.altura);
   }
 
   inimigoHitbox() {
@@ -161,6 +183,7 @@ class Inimigo {
       altura: this.altura
     };
   }
+
   mostrarVida() {
     let larguraBarra = this.largura;
     let alturaBarra = 8;
@@ -171,7 +194,6 @@ class Inimigo {
     push();
     noStroke();
 
-    // Fundo da barra
     fill(255, 0, 0);
     rect(
       this.x,
@@ -180,7 +202,6 @@ class Inimigo {
       alturaBarra
     );
 
-    // Vida restante
     fill(0, 200, 0);
     rect(
       this.x,

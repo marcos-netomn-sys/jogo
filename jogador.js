@@ -6,7 +6,7 @@ class Jogador {
     this.largura = 80;
     this.altura = 80;
 
-    this.velocidade = 7;
+    this.velocidade = 5;
 
     this.sprites = sprites;
 
