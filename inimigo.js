@@ -1,13 +1,13 @@
 
 class Inimigo {
-  constructor(x, y, sprites = null, animacoes = null) {
+  constructor(x, y, sprites, animacoes = null) {
     this.x = x;
     this.y = y;
 
     this.largura = 100;
     this.altura = 100;
 
-    this.velocidade = 1.35;
+    this.velocidade = 1.5;
 
     this.direcao = "direita";
     this.andando = true;

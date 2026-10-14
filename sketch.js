@@ -371,6 +371,7 @@ function criarBug() {
     new Inimigo(
       local.x,
       local.y,
+      null,
       animacoesBug
     )
     
