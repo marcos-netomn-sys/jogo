@@ -30,6 +30,7 @@ let servidorImg;
 
 let cavalos = [];
 let bugs = [];
+let virus = [];
 
 let tempoInicioJogo;
 let tempoUltimoSpawn = 0;
@@ -39,6 +40,10 @@ let total_cavalos_criados = 0;
 let maxBugs = 8;
 let total_bugs_criados = 0;
 let tempoUltimoSpawnBug = 0;
+
+let maxVirus = 8;
+let total_virus_criados = 0;
+let tempoUltimoSpawnVirus = 0;
 
 let roundAtual = 1;
 let estadoRound = "jogando";
@@ -99,6 +104,60 @@ let mapeamentoBug = {
 
 let bugSprites = {};
 let animacoesBug = {};
+
+// MAPEAMENTO DOS FRAMES DO VÍRUS
+let mapeamentoVirus = {
+  direita: {
+    frames: [
+      { x: 10, y: 300 },
+      { x: 380, y: 300 },
+      { x: 710, y: 300 },
+      { x: 1060, y: 300 },
+      { x: 1410, y: 300 }
+    ],
+    frameWidth: 350,
+    frameHeight: 320
+  },
+
+  esquerda: {
+    frames: [
+      { x: 20, y: 320 },
+      { x: 370, y: 320 },
+      { x: 730, y: 320 },
+      { x: 1060, y: 320 },
+      { x: 1420, y: 320 }
+    ],
+    frameWidth: 350,
+    frameHeight: 320
+  },
+
+  baixo: {
+    frames: [
+      { x: 330, y: 10 },
+      { x: 330, y: 315 },
+      { x: 345, y: 620 },
+      { x: 335, y: 925 },
+      { x: 330, y: 1230 }
+    ],
+    frameWidth: 360,
+    frameHeight: 320
+  },
+
+  cima: {
+    frames: [
+      { x: 350, y: 10 },
+      { x: 350, y: 310 },
+      { x: 350, y: 620 },
+      { x: 350, y: 935 },
+      { x: 350, y: 1240 }
+    ],
+    frameWidth: 320,
+    frameHeight: 310
+  }
+};
+
+let virusSprites = {};
+let animacoesVirus = {};
 
 class Hitbox {
   constructor(x, y, largura, altura) {
@@ -194,27 +253,27 @@ function preload() {
 
   // Sprites dos cavalos de Troia
   cavaloSprites.direita = [
-    loadImage("Assets/Cavalo_troia/direita/CT_parado.png"),
-    loadImage("Assets/Cavalo_troia/direita/CT_passo1.png")
+    loadImage("Assets/Cavalo De Troia/direita/CT_parado.png"),
+    loadImage("Assets/Cavalo De Troia/direita/CT_passo1.png")
   ];
 
   cavaloSprites.cima = [
-    loadImage("Assets/Cavalo_troia/cima/CT_cima_parado1.png"),
-    loadImage("Assets/Cavalo_troia/cima/CT_cima_passo1.png")
+    loadImage("Assets/Cavalo De Troia/cima/CT_cima_parado1.png"),
+    loadImage("Assets/Cavalo De Troia/cima/CT_cima_passo1.png")
   ];
 
   cavaloSprites.esquerda = [
-    loadImage("Assets/Cavalo_troia/esquerda/CT_parado.png"),
-    loadImage("Assets/Cavalo_troia/esquerda/CT_passo1.png"),
-    loadImage("Assets/Cavalo_troia/esquerda/CT_passo2.png"),
-    loadImage("Assets/Cavalo_troia/esquerda/CT_passo3.png")
+    loadImage("Assets/Cavalo De Troia/esquerda/CT_parado.png"),
+    loadImage("Assets/Cavalo De Troia/esquerda/CT_passo1.png"),
+    loadImage("Assets/Cavalo De Troia/esquerda/CT_passo2.png"),
+    loadImage("Assets/Cavalo De Troia/esquerda/CT_passo3.png")
   ];
 
   cavaloSprites.baixo = [
-    loadImage("Assets/Cavalo_troia/baixo/CT_baixo_parado.png"),
-    loadImage("Assets/Cavalo_troia/baixo/CT_baixo_passo1.png"),
-    loadImage("Assets/Cavalo_troia/baixo/CT_baixo_passo2.png"),
-    loadImage("Assets/Cavalo_troia/baixo/CT_baixo_passo3.png")
+    loadImage("Assets/Cavalo De Troia/baixo/CT_baixo_parado.png"),
+    loadImage("Assets/Cavalo De Troia/baixo/CT_baixo_passo1.png"),
+    loadImage("Assets/Cavalo De Troia/baixo/CT_baixo_passo2.png"),
+    loadImage("Assets/Cavalo De Troia/baixo/CT_baixo_passo3.png")
   ];
 
   // Servidor e decoração
@@ -243,6 +302,18 @@ function preload() {
     )
   };
 
+   // Spritesheets do Vírus
+  virusSprites = {
+    direita: loadImage(
+      "Assets/Vírus/Vírus.png"
+    ),
+
+    esquerda: loadImage(
+      "Assets/Vírus/Vírus - Esquerda.png"
+    ),
+
+  }
+
   // Animações do Bug usando a classe Animacao.js
   animacoesBug = {
     direita: new Animacao(
@@ -266,6 +337,21 @@ function preload() {
     )
   };
 }
+
+// Animações do Vírus usando a classe Animacao.js
+
+animacoesVirus = {
+    direita: new Animacao(
+      mapeamentoVirus.direita,
+      virusSprites.direita
+    ),
+
+    esquerda: new Animacao(
+      mapeamentoVirus.esquerda,
+      virusSprites.esquerda
+    ),
+
+  }
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -377,6 +463,42 @@ function criarBug() {
     
   )
   console.log("Quantidade de Bugs:", bugs.length);
+}
+
+// CRIAR VÍRUS
+function criarVirus() {
+  console.log("Função criarVirus foi chamada!");
+  let locaisSpawn = [
+    { x: 0, y: height * 0.27 },
+    { x: 0, y: height * 0.30 },
+    { x: 0, y: height * 0.33 },
+
+    { x: width, y: height * 0.27 },
+    { x: width, y: height * 0.30 },
+    { x: width, y: height * 0.33 },
+
+    { x: width * 0.47, y: 0 },
+    { x: width * 0.50, y: 0 },
+    { x: width * 0.53, y: 0 },
+
+    { x: width * 0.47, y: height },
+    { x: width * 0.50, y: height },
+    { x: width * 0.53, y: height }
+  ];
+
+  let local = random(locaisSpawn);
+
+  viruses.push(
+    
+    new Inimigo(
+      local.x,
+      local.y,
+      null,
+      animacoesVirus
+    )
+    
+  )
+  console.log("Quantidade de Vírus:", viruses.length);
 }
 
 function draw() {
